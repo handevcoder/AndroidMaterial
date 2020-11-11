@@ -2,6 +2,7 @@ package id.refactory.androidmaterial.day8.views
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.core.widget.addTextChangedListener
 import id.refactory.androidmaterial.databinding.ActivityEightBinding
 import id.refactory.androidmaterial.day8.adapters.UserAdapter
 import id.refactory.androidmaterial.day8.models.UserModel
@@ -18,11 +19,16 @@ class EightActivity : AppCompatActivity(), MainView {
         setContentView(binding.root)
 
         binding.rvUser.adapter = adapter
+        binding.etFilter.addTextChangedListener { text -> presenter.filterUserByName(text.toString()) }
 
         presenter.getAllUser()
     }
 
     override fun onSuccessGetAllUser(users: List<UserModel>) {
+        adapter.setData(users)
+    }
+
+    override fun onSuccessFilterUserByName(users: List<UserModel>) {
         adapter.setData(users)
     }
 }
