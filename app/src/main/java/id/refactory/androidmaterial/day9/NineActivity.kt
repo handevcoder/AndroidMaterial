@@ -1,5 +1,6 @@
 package id.refactory.androidmaterial.day9
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import id.refactory.androidmaterial.databinding.ActivityNineBinding
@@ -26,6 +27,8 @@ class NineActivity : AppCompatActivity() {
                     it.setAge(tieAge.text.toString().toIntOrNull() ?: -1)
                     it.setWeight(tieWeight.text.toString().toFloatOrNull() ?: -1.0f)
                     it.setIsSingle(cbIsSingle.isChecked)
+
+                    startActivity(Intent(this@NineActivity, TodoActivity::class.java))
                 }
             }
         }

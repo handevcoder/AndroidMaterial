@@ -11,6 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidMaterial">
+        <activity
+            android:name=".day9.TodoActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".day9.NineActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

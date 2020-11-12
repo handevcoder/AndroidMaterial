@@ -12,6 +12,7 @@ class LocalStorage(private val context: Context) {
         private const val KEY_AGE = "KEY_AGE"
         private const val KEY_WEIGHT = "KEY_WEIGHT"
         private const val KEY_IS_SINGLE = "KEY_IS_SINGLE"
+        private const val KEY_TODO = "KEY_TODO"
     }
 
     private val sharedPreferences by lazy {
@@ -61,5 +62,18 @@ class LocalStorage(private val context: Context) {
 
     fun getIsSingle(): Boolean {
         return sharedPreferences.getBoolean(KEY_IS_SINGLE, true)
+    }
+
+    fun setTodo(data: Set<String>) {
+        sharedPreferences.save(KEY_TODO, data)
+    }
+
+    fun addTodo(data: String) {
+        val todo = getTodo().toMutableList().apply { add(data) }.toSet()
+        sharedPreferences.save(KEY_TODO, todo)
+    }
+
+    fun getTodo(): Set<String> {
+        return sharedPreferences.getStringSet(KEY_TODO, setOf()) ?: setOf()
     }
 }
