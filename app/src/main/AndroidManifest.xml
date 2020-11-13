@@ -11,16 +11,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidMaterial">
-        <activity
-            android:name=".day9.TodoActivity"
-            android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".day9.NineActivity">
+        <activity android:name=".day10.TenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".day9.TodoActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".day9.NineActivity" />
         <activity android:name=".day8.views.EightActivity" />
         <activity android:name=".day7.SevenActivity" />
         <activity android:name=".day6.SecondActivity" />
