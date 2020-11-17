@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".day12.fragments.RelativeFragment">
+
+    <TextView
+        android:id="@+id/v_one"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:layout_toStartOf="@id/v_two"
+        android:background="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/v_two"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_alignParentEnd="true"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/v_three"
+        android:layout_width="206dp"
+        android:layout_height="match_parent"
+        android:layout_above="@id/v_five"
+        android:layout_below="@id/v_one"
+        android:background="@android:color/holo_green_dark" />
+
+    <TextView
+        android:id="@+id/v_four"
+        android:layout_width="206dp"
+        android:layout_height="match_parent"
+        android:layout_above="@id/v_six"
+        android:layout_below="@id/v_two"
+        android:layout_alignParentEnd="true"
+        android:background="@android:color/holo_red_light" />
+
+    <TextView
+        android:id="@+id/v_five"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/v_six"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@id/v_five"
+        android:background="@android:color/darker_gray" />
+
+</RelativeLayout>
