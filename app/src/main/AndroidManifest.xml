@@ -11,13 +11,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidMaterial">
-        <activity android:name=".day12.TwelveActivity">
+        <activity android:name=".day13.ThirteenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".day12.TwelveActivity" />
         <activity android:name=".day11.ElevenActivity" />
         <activity android:name=".day10.TenActivity" />
         <activity
