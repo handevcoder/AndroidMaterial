@@ -1,18 +1,21 @@
 package id.refactory.androidmaterial.day14.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import id.refactory.androidmaterial.R
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import id.refactory.androidmaterial.databinding.FragmentProductsBinding
-import id.refactory.androidmaterial.day13.adapters.ProductAdapter
-import id.refactory.androidmaterial.day13.clients.ProductClient
-import id.refactory.androidmaterial.day13.fragments.ProductsFragmentDirections
-import id.refactory.androidmaterial.day13.models.ProductModel
+import id.refactory.androidmaterial.day14.adapters.Product
+import id.refactory.androidmaterial.day14.adapters.ProductAdapter
+import id.refactory.androidmaterial.day14.clients.ProductClient
+import id.refactory.androidmaterial.day14.models.ProductModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -49,6 +52,11 @@ class ProductsFragment : Fragment(), ProductAdapter.ProductListener {
     ): View? {
         binding = FragmentProductsBinding.inflate(inflater, container, false).apply {
             rvProduct.adapter = adapter
+            rvProduct.layoutManager = LinearLayoutManager(requireContext())
+            rvProduct.addItemDecoration(
+                DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+            )
+
             fabAdd.setOnClickListener { toProductLayout() }
         }
 
@@ -57,7 +65,22 @@ class ProductsFragment : Fragment(), ProductAdapter.ProductListener {
                 call: Call<List<ProductModel>>,
                 response: Response<List<ProductModel>>
             ) {
-                response.body()?.let { adapter.list = it }
+                response.body()?.let {
+                    val list = mutableListOf<Product>()
+                    var temp = ""
+
+                    it.forEach { model ->
+                        if (!temp.equals(model.category, true)) {
+                            temp = model.category
+
+                            list.add(Product.Header(temp))
+                        }
+
+                        list.add(Product.Row(model))
+                    }
+
+                    adapter.list = list
+                }
             }
 
             override fun onFailure(call: Call<List<ProductModel>>, t: Throwable) {
@@ -94,29 +117,15 @@ class ProductsFragment : Fragment(), ProductAdapter.ProductListener {
             }
     }
 
-    override fun onSelect(id: Int) {
-        toProductLayout(id)
+    override fun onSelect(id: Int, isSelect: Boolean) {
+
     }
 
     private fun toProductLayout(id: Int = 0) {
         findNavController().navigate(
-            ProductsFragmentDirections.actionProductsFragmentToProductFragment(
+            ProductsFragmentDirections.actionProductsFragment2ToProductFragment2(
                 id
             )
         )
-    }
-
-    override fun onDelete(id: Int) {
-        ProductClient.service.deleteProductById(id).enqueue(object : Callback<ProductModel> {
-            override fun onResponse(call: Call<ProductModel>, response: Response<ProductModel>) {
-                if (response.isSuccessful) {
-                    adapter.deleteProductById(id)
-                }
-            }
-
-            override fun onFailure(call: Call<ProductModel>, t: Throwable) {
-                onError(t)
-            }
-        })
     }
 }

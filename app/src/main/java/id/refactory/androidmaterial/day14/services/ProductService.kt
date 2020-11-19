@@ -1,6 +1,6 @@
 package id.refactory.androidmaterial.day14.services
 
-import id.refactory.androidmaterial.day13.models.ProductModel
+import id.refactory.androidmaterial.day14.models.ProductModel
 import retrofit2.Call
 import retrofit2.http.*
 

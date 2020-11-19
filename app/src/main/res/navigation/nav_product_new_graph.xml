@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_product_new_graph.xml"
+    app:startDestination="@id/productsFragment2">
+
+    <fragment
+        android:id="@+id/productsFragment2"
+        android:name="id.refactory.androidmaterial.day14.fragments.ProductsFragment"
+        android:label="ProductsFragment" >
+        <action
+            android:id="@+id/action_productsFragment2_to_productFragment2"
+            app:destination="@id/productFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/productFragment2"
+        android:name="id.refactory.androidmaterial.day14.fragments.ProductFragment"
+        android:label="ProductFragment" >
+        <argument android:name="id"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
+</navigation>

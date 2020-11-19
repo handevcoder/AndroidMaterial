@@ -9,9 +9,8 @@ import android.widget.Toast
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import id.refactory.androidmaterial.databinding.FragmentProductBinding
-import id.refactory.androidmaterial.day13.clients.ProductClient
-import id.refactory.androidmaterial.day13.fragments.ProductFragmentArgs
-import id.refactory.androidmaterial.day13.models.ProductModel
+import id.refactory.androidmaterial.day14.clients.ProductClient
+import id.refactory.androidmaterial.day14.models.ProductModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
