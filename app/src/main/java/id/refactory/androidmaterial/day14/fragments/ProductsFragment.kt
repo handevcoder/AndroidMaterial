@@ -121,7 +121,8 @@ class ProductsFragment : Fragment(), ProductAdapter.ProductListener, ProductAdap
                         ) {
                             if (response.isSuccessful) {
                                 if (list.lastIndex == list.indexOf(it)) {
-                                    val tempList = products.filter { product -> !list.contains(product.id) }
+                                    val tempList =
+                                        products.filter { product -> !list.contains(product.id) }
 
                                     generateProduct(tempList)
 
@@ -161,13 +162,12 @@ class ProductsFragment : Fragment(), ProductAdapter.ProductListener, ProductAdap
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ProductsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+        fun newInstance(param1: String, param2: String) = ProductsFragment().apply {
+            arguments = Bundle().apply {
+                putString(ARG_PARAM1, param1)
+                putString(ARG_PARAM2, param2)
             }
+        }
     }
 
     override fun onSelect(id: Int, isSelect: Boolean) {
@@ -186,9 +186,7 @@ class ProductsFragment : Fragment(), ProductAdapter.ProductListener, ProductAdap
 
     private fun toProductLayout(id: Int = 0) {
         findNavController().navigate(
-            ProductsFragmentDirections.actionProductsFragment2ToProductFragment2(
-                id
-            )
+            ProductsFragmentDirections.actionProductsFragment2ToProductFragment2(id)
         )
     }
 
