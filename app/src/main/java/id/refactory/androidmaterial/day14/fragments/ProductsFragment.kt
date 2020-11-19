@@ -6,14 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import id.refactory.androidmaterial.databinding.DialogBulkDeleteBinding
 import id.refactory.androidmaterial.databinding.FragmentProductsBinding
 import id.refactory.androidmaterial.day14.adapters.Product
 import id.refactory.androidmaterial.day14.adapters.ProductAdapter
+import id.refactory.androidmaterial.day14.callbacks.DragAndDropCallback
 import id.refactory.androidmaterial.day14.clients.ProductClient
 import id.refactory.androidmaterial.day14.models.ProductModel
 import retrofit2.Call
@@ -30,7 +34,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [ProductsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ProductsFragment : Fragment(), ProductAdapter.ProductListener {
+class ProductsFragment : Fragment(), ProductAdapter.ProductListener, ProductAdapter.DragListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -44,7 +48,8 @@ class ProductsFragment : Fragment(), ProductAdapter.ProductListener {
     }
 
     private lateinit var binding: FragmentProductsBinding
-    private val adapter by lazy { ProductAdapter(requireContext(), this) }
+    private val adapter by lazy { ProductAdapter(requireContext(), this, this) }
+    private val itemTouchHelper by lazy { ItemTouchHelper(DragAndDropCallback(adapter)) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,8 +61,9 @@ class ProductsFragment : Fragment(), ProductAdapter.ProductListener {
             rvProduct.addItemDecoration(
                 DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
             )
+            itemTouchHelper.attachToRecyclerView(rvProduct)
 
-            fabAdd.setOnClickListener { toProductLayout() }
+            fabAdd.setOnClickListener { deleteAll() }
         }
 
         ProductClient.service.getAllProduct().enqueue(object : Callback<List<ProductModel>> {
@@ -89,6 +95,35 @@ class ProductsFragment : Fragment(), ProductAdapter.ProductListener {
         })
 
         return binding.root
+    }
+
+    private fun deleteAll() {
+        val builder = AlertDialog.Builder(requireContext())
+        val dialogBinding = DialogBulkDeleteBinding.inflate(layoutInflater)
+        builder.setView(dialogBinding.root)
+        val alertDialog = builder.create()
+
+        dialogBinding.btnYes.setOnClickListener {
+            Toast.makeText(
+                requireContext(),
+                "Yes",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            alertDialog.dismiss()
+        }
+
+        dialogBinding.btnCancel.setOnClickListener {
+            Toast.makeText(
+                requireContext(),
+                "Cancel",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            alertDialog.dismiss()
+        }
+
+        alertDialog.show()
     }
 
     private fun onError(t: Throwable) {
@@ -127,5 +162,9 @@ class ProductsFragment : Fragment(), ProductAdapter.ProductListener {
                 id
             )
         )
+    }
+
+    override fun requestDrag(viewHolder: RecyclerView.ViewHolder) {
+        itemTouchHelper.startDrag(viewHolder)
     }
 }

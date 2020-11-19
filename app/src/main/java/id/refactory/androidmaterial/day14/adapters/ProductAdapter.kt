@@ -1,12 +1,15 @@
 package id.refactory.androidmaterial.day14.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import id.refactory.androidmaterial.databinding.ItemCategoryBinding
 import id.refactory.androidmaterial.databinding.ItemProductNewBinding
+import id.refactory.androidmaterial.day14.callbacks.DragAndDropCallback
 import id.refactory.androidmaterial.day14.models.ProductModel
 import java.util.*
 
@@ -16,8 +19,14 @@ sealed class Product {
 }
 
 class ProductAdapter(
-    private val context: Context, private val listener: ProductListener
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val context: Context,
+    private val listener: ProductListener,
+    private val dragListener: DragListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), DragAndDropCallback.DragAndDropListener {
+
+    interface DragListener {
+        fun requestDrag(viewHolder: RecyclerView.ViewHolder)
+    }
 
     interface ProductListener {
         fun onSelect(id: Int, isSelect: Boolean)
@@ -28,8 +37,12 @@ class ProductAdapter(
 
     inner class RowViewHolder(
         private val binding: ItemProductNewBinding,
-        private val listener: ProductListener
+        private val listener: ProductListener,
+        private val dragListener: DragListener
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        @SuppressLint("ClickableViewAccessibility")
+
         fun binData(productModel: ProductModel) {
             binding.run {
                 tvProduct.text = productModel.title
@@ -41,6 +54,14 @@ class ProductAdapter(
                         productModel.id,
                         isChecked
                     )
+                }
+
+                root.setOnTouchListener { view, event ->
+                    view.performClick()
+
+                    if (event.action == MotionEvent.ACTION_DOWN) dragListener.requestDrag(this@RowViewHolder)
+
+                    false
                 }
             }
         }
@@ -72,7 +93,8 @@ class ProductAdapter(
             )
             row -> RowViewHolder(
                 ItemProductNewBinding.inflate(LayoutInflater.from(context), parent, false),
-                listener
+                listener,
+                dragListener
             )
             else -> throw IllegalArgumentException("Unsupported view type")
         }
@@ -89,4 +111,24 @@ class ProductAdapter(
     }
 
     override fun getItemCount(): Int = list.size
+    override fun onRowMoved(from: RecyclerView.ViewHolder, to: RecyclerView.ViewHolder) {
+        val fromProduct = list[from.adapterPosition]
+        val toProduct = list[to.adapterPosition]
+
+        if (from is RowViewHolder && to is RowViewHolder && fromProduct is Product.Row && toProduct is Product.Row) {
+            if (fromProduct.item.category == toProduct.item.category) {
+                if (from.adapterPosition < to.adapterPosition) {
+                    for (i in from.adapterPosition until to.adapterPosition) {
+                        Collections.swap(list, i, i + 1)
+                    }
+                } else {
+                    for (i in from.adapterPosition downTo to.adapterPosition + 1) {
+                        Collections.swap(list, i, i - 1)
+                    }
+                }
+
+                notifyItemMoved(from.adapterPosition, to.adapterPosition)
+            }
+        }
+    }
 }
