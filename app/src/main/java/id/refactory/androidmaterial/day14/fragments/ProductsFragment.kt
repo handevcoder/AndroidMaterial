@@ -50,6 +50,8 @@ class ProductsFragment : Fragment(), ProductAdapter.ProductListener, ProductAdap
     private lateinit var binding: FragmentProductsBinding
     private val adapter by lazy { ProductAdapter(requireContext(), this, this) }
     private val itemTouchHelper by lazy { ItemTouchHelper(DragAndDropCallback(adapter)) }
+    private val list by lazy { mutableListOf<Int>() }
+    private var products = mutableListOf<ProductModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,20 +74,9 @@ class ProductsFragment : Fragment(), ProductAdapter.ProductListener, ProductAdap
                 response: Response<List<ProductModel>>
             ) {
                 response.body()?.let {
-                    val list = mutableListOf<Product>()
-                    var temp = ""
+                    products = it.toMutableList()
 
-                    it.forEach { model ->
-                        if (!temp.equals(model.category, true)) {
-                            temp = model.category
-
-                            list.add(Product.Header(temp))
-                        }
-
-                        list.add(Product.Row(model))
-                    }
-
-                    adapter.list = list
+                    generateProduct(it)
                 }
             }
 
@@ -97,6 +88,23 @@ class ProductsFragment : Fragment(), ProductAdapter.ProductListener, ProductAdap
         return binding.root
     }
 
+    private fun generateProduct(it: List<ProductModel>) {
+        val list = mutableListOf<Product>()
+        var temp = ""
+
+        it.forEach { model ->
+            if (!temp.equals(model.category, true)) {
+                temp = model.category
+
+                list.add(Product.Header(temp))
+            }
+
+            list.add(Product.Row(model))
+        }
+
+        adapter.list = list
+    }
+
     private fun deleteAll() {
         val builder = AlertDialog.Builder(requireContext())
         val dialogBinding = DialogBulkDeleteBinding.inflate(layoutInflater)
@@ -104,22 +112,32 @@ class ProductsFragment : Fragment(), ProductAdapter.ProductListener, ProductAdap
         val alertDialog = builder.create()
 
         dialogBinding.btnYes.setOnClickListener {
-            Toast.makeText(
-                requireContext(),
-                "Yes",
-                Toast.LENGTH_SHORT
-            ).show()
+            list.forEach {
+                ProductClient.service.deleteProductById(it)
+                    .enqueue(object : Callback<ProductModel> {
+                        override fun onResponse(
+                            call: Call<ProductModel>,
+                            response: Response<ProductModel>
+                        ) {
+                            if (response.isSuccessful) {
+                                if (list.lastIndex == list.indexOf(it)) {
+                                    val tempList = products.filter { product -> !list.contains(product.id) }
 
-            alertDialog.dismiss()
+                                    generateProduct(tempList)
+
+                                    alertDialog.dismiss()
+                                }
+                            }
+                        }
+
+                        override fun onFailure(call: Call<ProductModel>, t: Throwable) {
+                            onError(t)
+                        }
+                    })
+            }
         }
 
         dialogBinding.btnCancel.setOnClickListener {
-            Toast.makeText(
-                requireContext(),
-                "Cancel",
-                Toast.LENGTH_SHORT
-            ).show()
-
             alertDialog.dismiss()
         }
 
@@ -153,7 +171,17 @@ class ProductsFragment : Fragment(), ProductAdapter.ProductListener, ProductAdap
     }
 
     override fun onSelect(id: Int, isSelect: Boolean) {
+        val index = list.indexOf(id)
 
+        if (index != -1) {
+            if (!isSelect) {
+                list.remove(id)
+            }
+        } else {
+            if (isSelect) {
+                list.add(id)
+            }
+        }
     }
 
     private fun toProductLayout(id: Int = 0) {
