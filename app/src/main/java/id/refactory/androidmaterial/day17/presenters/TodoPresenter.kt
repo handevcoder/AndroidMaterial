@@ -21,7 +21,7 @@ class TodoPresenter(private val view: Todo.View, private val repository: TodoRep
     }
 
     override fun deleteTodo(id: Long) {
-        val todoId = repository.deleteTodo(id)
+        val todoId by lazy { repository.deleteTodo(id) }
         view.onSuccessDeleteTodo(todoId)
     }
 }
