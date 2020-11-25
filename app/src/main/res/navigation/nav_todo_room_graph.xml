@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_todo_room_graph.xml"
+    app:startDestination="@id/listTodoFragment">
+    <fragment
+        android:id="@+id/listTodoFragment"
+        android:name="id.refactory.androidmaterial.day18.views.fragments.ListTodoFragment"
+        android:label="fragment_list_todo"
+        tools:layout="@layout/fragment_list_todo" >
+        <action
+            android:id="@+id/action_listTodoFragment_to_detailTodoFragment"
+            app:destination="@id/detailTodoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailTodoFragment"
+        android:name="id.refactory.androidmaterial.day18.views.fragments.DetailTodoFragment"
+        android:label="fragment_detail_todo"
+        tools:layout="@layout/fragment_detail_todo" >
+        <argument
+            android:name="todo"
+            app:argType="id.refactory.androidmaterial.day18.models.TodoModel" />
+    </fragment>
+</navigation>
