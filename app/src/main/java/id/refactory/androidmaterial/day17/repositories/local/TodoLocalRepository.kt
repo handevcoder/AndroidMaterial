@@ -10,8 +10,7 @@ import id.refactory.androidmaterial.day17.repositories.TodoRepository
 import id.refactory.androidmaterial.day17.repositories.local.databases.LocalDatabase
 import id.refactory.androidmaterial.day17.repositories.local.entities.TodoEntity
 
-class TodoLocalRepository(context: Context) : TodoRepository {
-    private val localDatabase by lazy { LocalDatabase(context) }
+class TodoLocalRepository(private val localDatabase: LocalDatabase) : TodoRepository {
 
     override fun getAllTodo(): List<TodoModel> {
         val db = localDatabase.readableDatabase

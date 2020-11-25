@@ -1,20 +1,18 @@
 package id.refactory.androidmaterial.day17.views.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
-import id.refactory.androidmaterial.R
 import id.refactory.androidmaterial.databinding.FragmentTodoDetail2Binding
-import id.refactory.androidmaterial.databinding.FragmentTodoListBinding
 import id.refactory.androidmaterial.day17.models.TodoModel
 import id.refactory.androidmaterial.day17.presenters.TodoPresenter
 import id.refactory.androidmaterial.day17.repositories.TodoRepository
 import id.refactory.androidmaterial.day17.repositories.local.TodoLocalRepository
-import id.refactory.androidmaterial.day17.views.adapters.TodoAdapter
+import id.refactory.androidmaterial.day17.repositories.local.databases.LocalDatabase
 import id.refactory.androidmaterial.day17.views.contracts.Todo
 
 // TODO: Rename parameter arguments, choose names that match
@@ -41,14 +39,16 @@ class TodoDetailFragment : Fragment(), Todo.View {
     }
 
     private lateinit var binding: FragmentTodoDetail2Binding
-    private val repository: TodoRepository by lazy { TodoLocalRepository(requireContext()) }
+    private val repository: TodoRepository by lazy {
+        TodoLocalRepository(LocalDatabase(requireContext()))
+    }
     private val presenter: Todo.Presenter by lazy { TodoPresenter(this, repository) }
     private val args by navArgs<TodoDetailFragmentArgs>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentTodoDetail2Binding.inflate(inflater, container, false).apply {
             tieTodo.setText(args.todo.task)
 

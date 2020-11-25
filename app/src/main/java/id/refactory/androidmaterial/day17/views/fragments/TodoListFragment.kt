@@ -1,18 +1,18 @@
 package id.refactory.androidmaterial.day17.views.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import id.refactory.androidmaterial.R
 import id.refactory.androidmaterial.databinding.FragmentTodoListBinding
 import id.refactory.androidmaterial.day17.models.TodoModel
 import id.refactory.androidmaterial.day17.presenters.TodoPresenter
 import id.refactory.androidmaterial.day17.repositories.TodoRepository
 import id.refactory.androidmaterial.day17.repositories.local.TodoLocalRepository
+import id.refactory.androidmaterial.day17.repositories.local.databases.LocalDatabase
 import id.refactory.androidmaterial.day17.views.adapters.TodoAdapter
 import id.refactory.androidmaterial.day17.views.contracts.Todo
 
@@ -41,13 +41,15 @@ class TodoListFragment : Fragment(), Todo.View, TodoAdapter.TodoListener {
 
     private lateinit var binding: FragmentTodoListBinding
     private val adapter by lazy { TodoAdapter(requireContext(), this) }
-    private val repository: TodoRepository by lazy { TodoLocalRepository(requireContext()) }
+    private val repository: TodoRepository by lazy {
+        TodoLocalRepository(LocalDatabase(requireContext()))
+    }
     private val presenter: Todo.Presenter by lazy { TodoPresenter(this, repository) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentTodoListBinding.inflate(inflater, container, false).apply {
             rvTodo.adapter = adapter
 
