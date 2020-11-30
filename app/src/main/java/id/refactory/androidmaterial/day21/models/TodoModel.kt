@@ -10,7 +10,7 @@ data class TodoModel(
     val id: Long = 0,
     var task: String = "",
     var status: Boolean = false,
-    var date: String
+    var date: String = ""
 ): Parcelable
 
 fun TodoModel.toEntity() = TodoEntity(id, task, status, date)

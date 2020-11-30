@@ -8,9 +8,13 @@ import id.refactory.androidmaterial.R
 import id.refactory.androidmaterial.databinding.ItemTodoNewBinding
 import id.refactory.androidmaterial.day21.models.TodoModel
 
-class TodoAdapter(
-    private val context: Context, private val listener: TodoListener
-) : RecyclerView.Adapter<TodoAdapter.ViewHolder>() {
+class FavoriteAdapter(
+    private val context: Context, private val listener: FavoriteListener
+) : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>() {
+
+    interface FavoriteListener {
+        fun onClick(todoModel: TodoModel)
+    }
 
     var list = mutableListOf<TodoModel>()
         set(value) {
@@ -23,14 +27,6 @@ class TodoAdapter(
         notifyItemInserted(0)
     }
 
-    fun updateTodo(todoModel: TodoModel) {
-        val index = list.indexOfFirst { it.id == todoModel.id }
-        if (index != -1) {
-            list[index] = todoModel
-            notifyItemChanged(index)
-        }
-    }
-
     fun deleteTodo(todoModel: TodoModel) {
         val index = list.indexOfFirst { it.id == todoModel.id }
         if (index != -1) {
@@ -39,14 +35,7 @@ class TodoAdapter(
         }
     }
 
-    interface TodoListener {
-        fun onChange(todoModel: TodoModel)
-        fun onDelete(todoModel: TodoModel)
-        fun onFavorite(todoModel: TodoModel)
-    }
-
-    inner class ViewHolder(val binding: ItemTodoNewBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(val binding: ItemTodoNewBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bindData(todoModel: TodoModel) {
             binding.run {
                 tvTodo.text = todoModel.task
@@ -64,9 +53,7 @@ class TodoAdapter(
 
         holder.bindData(model)
         holder.binding.run {
-            cvRoot.setOnClickListener { listener.onFavorite(model) }
-            ivStatus.setOnClickListener { listener.onChange(model) }
-            ivTodo.setOnClickListener { listener.onDelete(model) }
+            ivTodo.setOnClickListener { listener.onClick(model) }
         }
     }
 

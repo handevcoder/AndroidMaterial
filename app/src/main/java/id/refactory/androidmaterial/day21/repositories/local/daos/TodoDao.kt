@@ -16,4 +16,7 @@ interface TodoDao {
 
     @Delete
     suspend fun deleteTodo(todoEntity: TodoEntity)
+
+    @Query("SELECT EXISTS(SELECT * FROM tabel_todo WHERE id = :id)")
+    suspend fun isFavorites(id: Long): Boolean
 }

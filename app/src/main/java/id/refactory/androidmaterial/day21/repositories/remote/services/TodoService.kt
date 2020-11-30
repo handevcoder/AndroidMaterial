@@ -19,5 +19,5 @@ interface TodoService {
     ): BaseResponse<TodoResponse>
 
     @DELETE("v1/todos/{id}")
-    suspend fun deleteTodoById(@Path("id") id: Long): BaseResponse<String>
+    suspend fun deleteTodoById(@Path("id") id: Long): BaseResponse<TodoResponse>
 }

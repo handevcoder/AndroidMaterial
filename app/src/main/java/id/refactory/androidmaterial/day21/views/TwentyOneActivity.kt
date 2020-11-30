@@ -28,7 +28,7 @@ class TwentyOneActivity : AppCompatActivity() {
         binding.run {
             vpPager.adapter = adapter
 
-            TabLayoutMediator(tlTab, vpPager) { tab, index -> tab.text = pager[index].title }
+            TabLayoutMediator(tlTab, vpPager) { tab, index -> tab.text = pager[index].title }.attach()
         }
     }
 }

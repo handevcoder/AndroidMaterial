@@ -8,6 +8,8 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tl_tab"
+        android:background="@color/black"
+        app:tabTextColor="@color/white"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"

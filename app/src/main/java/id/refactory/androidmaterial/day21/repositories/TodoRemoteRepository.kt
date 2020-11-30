@@ -8,5 +8,5 @@ interface TodoRemoteRepository {
     suspend fun getAllTodo(): BaseResponse<List<TodoResponse>>
     suspend fun insertTodo(todoRequest: TodoRequest): BaseResponse<TodoResponse>
     suspend fun updateTodo(id: Long, todoRequest: TodoRequest): BaseResponse<TodoResponse>
-    suspend fun deleteTodo(id: Long): BaseResponse<String>
+    suspend fun deleteTodo(id: Long): BaseResponse<TodoResponse>
 }

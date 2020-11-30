@@ -6,7 +6,7 @@ import id.refactory.androidmaterial.day21.repositories.remote.responses.BaseResp
 import id.refactory.androidmaterial.day21.repositories.remote.responses.TodoResponse
 import id.refactory.androidmaterial.day21.repositories.remote.services.TodoService
 
-class TodoRemoteRepository(private val service: TodoService) : TodoRemoteRepository {
+class TodoRemoteRepositoryImpl(private val service: TodoService) : TodoRemoteRepository {
     override suspend fun getAllTodo(): BaseResponse<List<TodoResponse>> = service.getAllTodo()
 
     override suspend fun insertTodo(todoRequest: TodoRequest): BaseResponse<TodoResponse> =
@@ -17,5 +17,5 @@ class TodoRemoteRepository(private val service: TodoService) : TodoRemoteReposit
         todoRequest: TodoRequest
     ): BaseResponse<TodoResponse> = service.updateTodoById(id, todoRequest)
 
-    override suspend fun deleteTodo(id: Long): BaseResponse<String> = service.deleteTodoById(id)
+    override suspend fun deleteTodo(id: Long): BaseResponse<TodoResponse> = service.deleteTodoById(id)
 }

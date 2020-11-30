@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class TodoClient {
     companion object {
-        private const val BASE_URL = "https://online-course-todo.herokuapp.com/"
+        private const val BASE_URL = "https://online-course-todo.herokuapp.com"
         private const val BASE_URL_API = "$BASE_URL/api/"
 
         val service: TodoService by lazy {

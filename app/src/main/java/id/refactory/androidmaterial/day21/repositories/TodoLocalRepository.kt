@@ -6,4 +6,5 @@ interface TodoLocalRepository {
     suspend fun getAllTodo(): List<TodoEntity>
     suspend fun insertTodo(todoEntity: TodoEntity)
     suspend fun deleteTodo(todoEntity: TodoEntity)
+    suspend fun isFavorite(id: Long): Boolean
 }

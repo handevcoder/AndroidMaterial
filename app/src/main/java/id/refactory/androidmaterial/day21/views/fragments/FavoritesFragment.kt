@@ -5,7 +5,23 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import id.refactory.androidmaterial.R
+import id.refactory.androidmaterial.databinding.FragmentFavoritesBinding
+import id.refactory.androidmaterial.day21.models.TodoModel
+import id.refactory.androidmaterial.day21.repositories.TodoLocalRepository
+import id.refactory.androidmaterial.day21.repositories.TodoRemoteRepository
+import id.refactory.androidmaterial.day21.repositories.local.TodoLocalRepositoryImpl
+import id.refactory.androidmaterial.day21.repositories.local.daos.TodoDao
+import id.refactory.androidmaterial.day21.repositories.local.databases.LocalDatabase
+import id.refactory.androidmaterial.day21.repositories.remote.TodoRemoteRepositoryImpl
+import id.refactory.androidmaterial.day21.repositories.remote.clients.TodoClient
+import id.refactory.androidmaterial.day21.repositories.remote.services.TodoService
+import id.refactory.androidmaterial.day21.viewmodels.TodoViewModel
+import id.refactory.androidmaterial.day21.viewmodels.TodoViewModelFactory
+import id.refactory.androidmaterial.day21.views.adapter.FavoriteAdapter
+import id.refactory.androidmaterial.day21.views.adapter.TodoAdapter
+import id.refactory.androidmaterial.day21.views.states.TodoState
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -17,7 +33,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [FavoritesFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class FavoritesFragment : Fragment() {
+class FavoritesFragment : Fragment(), FavoriteAdapter.FavoriteListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -30,12 +46,46 @@ class FavoritesFragment : Fragment() {
         }
     }
 
+    private lateinit var binding: FragmentFavoritesBinding
+
+    private val adapter by lazy { FavoriteAdapter(requireActivity(), this) }
+    private val service: TodoService by lazy { TodoClient.service }
+    private val dao: TodoDao by lazy { LocalDatabase.getDatabase(requireContext()).dao() }
+    private val localRepository: TodoLocalRepository by lazy { TodoLocalRepositoryImpl(dao) }
+    private val remoteRepository: TodoRemoteRepository by lazy { TodoRemoteRepositoryImpl(service) }
+    private val viewModelFactory by lazy { TodoViewModelFactory(remoteRepository, localRepository) }
+    private val viewModel by viewModels<TodoViewModel> { viewModelFactory }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_favorites, container, false)
+    ): View {
+        binding = FragmentFavoritesBinding.inflate(inflater, container, false).apply {
+            rvFavorite.adapter = adapter
+
+            viewModel.state.observe(viewLifecycleOwner) {
+                when (it) {
+                    is TodoState.SuccessGetAllFavorite -> {
+                        adapter.list = it.list.toMutableList()
+                    }
+                    is TodoState.SuccessInsertFavorite -> {
+                        adapter.insertTodo(it.todo)
+                    }
+                    is TodoState.SuccessDeleteFavorite -> {
+                        adapter.deleteTodo(it.todo)
+                    }
+                    else -> throw Exception("Unsupported state type")
+                }
+            }
+        }
+
+        return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.getAllFavorite()
     }
 
     companion object {
@@ -56,5 +106,9 @@ class FavoritesFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    override fun onClick(todoModel: TodoModel) {
+        viewModel.submitFavorite(todoModel)
     }
 }
